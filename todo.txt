@@ -1,0 +1,28 @@
+Add in a loops option for ambiance looping sounds.
+  Docs: http://www.pygame.org/docs/ref/mixer.html
+    Search for loop
+Investigate the possiblity of assiging each sound a base command, and then using modifications of that for each command
+  Ex:
+    sounds.txt:
+      [sound.ogg]
+      _name = Magic Sound
+      _command = mag
+    Possible commands:
+      silence mag
+      fade 1 mag
+      play mag
+      loop mag
+Investigate the possiblity of a alias.txt
+  Ex:
+    sounds.txt:
+      [sound.ogg]
+      _name = Magic Sound
+      _command = mag
+    alias.txt:
+      m-sil = silence mag
+    Possible commands:
+      silence mag
+      fade 1 mag
+      play mag
+      loop mag
+      m-sil

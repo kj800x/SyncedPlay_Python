@@ -1,0 +1,131 @@
+[DR/BookP1-1.ogg]
+
+_name = BOOK 1-1
+^pb1-1 = play
+^fb1-1 = fade 1
+
+[DR/BookP1-2.ogg]
+
+_name = BOOK 1-2
+^pb1-2 = play
+^fb1-2 = fade 1
+
+[DR/BookP2-1.ogg]
+
+_name = BOOK 2-1
+^pb2-1 = play
+^fb2-1 = fade 1
+
+[DR/BookP16-1.ogg]
+
+_name = BOOK 16-1
+^pb16-1 = play
+^fb16-1 = fade 1
+
+[Jones/JonesP22-1.ogg]
+
+_name = Jones 22-1
+^pj22-1 = play
+^fj22-1 = fade 1
+
+[Jones/JonesP22-2.ogg]
+
+_name = Jones 22-2
+^pj22-2 = play
+^fj22-2 = fade 1
+
+[Jones/JonesP23-1.ogg]
+
+_name = Jones 23-1
+^pj23-1 = play
+^fj23-1 = fade 1
+
+[Jones/JonesP23-2.ogg]
+
+_name = Jones 23-2
+^pj23-2 = play
+^fj23-2 = fade 1
+
+[Jones/JonesP39-1.ogg]
+
+_name = Jones 39-1
+^pj39-1 = play
+^fj39-1 = fade 1
+
+[Jones/JonesP39-2.ogg]
+
+_name = Jones 39-2
+^pj39-2 = play
+^fj39-2 = fade 1
+
+[DR/BookP41-1.ogg]
+
+_name = BOOK 41-1
+^pb41-1 = play
+^fb41-1 = fade 1
+
+[JB/JBP64-1.ogg]
+
+_name = Frank 64-1
+^pf64-1 = play
+^ff64-1 = fade 1
+
+[DR/BookP66-1.ogg]
+
+_name = BOOK 66-1
+^pb66-1 = play
+^fb66-1 = fade 1
+
+[DR/BookP66-2.ogg]
+
+_name = BOOK 66-2
+^pb66-2 = play
+^fb66-2 = fade 1
+
+[DR/BookP99-1.ogg]
+
+_name = BOOK 99-1
+^pb99-1 = play
+^fb99-1 = fade 1
+
+[DR/BookP115-1.ogg]
+
+_name = BOOK 115-1
+^pb115-1 = play
+^fb115-1 = fade 1
+
+[DR/BookP128-1.ogg]
+
+_name = BOOK 128-1
+^pb128-1 = play
+^fb128-1 = fade 1
+
+[FX/Door-Bell.ogg]
+
+_name = Door-Bell
+^db = play
+^_db = fade 1
+
+[FX/Ele-Ding.ogg]
+
+_name = Elevator-Ding
+^ed = play
+^_ed = fade 1
+
+[FX/Ele-Ding2.ogg]
+
+_name = Elevator-Ding
+^ed2 = play
+^_ed2 = fade 1
+
+[FX/Intercom-Buzz.ogg]
+
+_name = Intercom-Buzz
+^ib = play
+^_ib = fade 1
+
+[FX/Phone-Ring.ogg]
+
+_name = Intercom-Buzz
+^pr = play
+^_pr = fade 1
