@@ -1,0 +1,10 @@
+num_channels = 2
+soundfile = ./sounds.txt
+cuesfile = ./cues.txt
+layoutfile = ./genericlayout.txt
+fullscreen = True
+windowwidth = 0
+windowheight = 0
+undefinedcolor = 96C4F2
+font = Courier New
+fontsize = 15

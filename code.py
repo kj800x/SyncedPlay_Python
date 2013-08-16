@@ -4,22 +4,24 @@ import re
 
 re_startsection = re.compile(r"\[(.*)\]")
 re_data = re.compile(r"\_(.*)=(.*)")
+re_generickeyvalue = re.compile(r"(.*)=(.*)")
 re_command = re.compile(r"\^(.*)=(.*)")
 re_comment = re.compile(r"#.*$")
 
 pygame.init()
+settings = {};
 
-SONG_END = pygame.USEREVENT + 10
+#READ GENERIC CONFIGURATION FILE settings.txt
+f = open('./settings.txt', 'r').read()
+for line in f.splitlines():
+  key = re_generickeyvalue.match(line).group(1).strip()
+  value = re_generickeyvalue.match(line).group(2).strip()
+  settings[key] = value;
 
+
+#PREPARE the mixer so we can create sound objects
 pygame.mixer.init()
-pygame.mixer.set_num_channels(30)
-
-class CueObject:
-  comment = ""
-  commands = []
-  def __init__(self, comment, commands):
-    self.comment = comment
-    self.commands = commands
+pygame.mixer.set_num_channels(int(settings["num_channels"]))
 
 class SoundDataObject:
   soundobj = "";
@@ -30,13 +32,10 @@ class SoundDataObject:
     self.data = data;
     self.commands = commands;
 
-
-
-
-
+#READ CONFIGURATION FILE FOR SOUNDS
 sounds = [];
 
-f = open('./sounds.txt', 'r').read()
+f = open(settings["soundfile"], 'r').read()
 
 sectionsanddata = re_startsection.split(f)[1:]
 
@@ -64,12 +63,40 @@ while sectionsanddata:
   sounds.append(a);
 
 
+#READ CONFIGURATION FILE FOR LAYOUT
+layout = {};
+f = open(settings["layoutfile"], 'r').read()
 
-#BEGIN CUE
+sectionsanddata = re_startsection.split(f)[1:]
+
+while sectionsanddata:
+  title = sectionsanddata[0].strip()
+  sectiondata = {}
+  data_raw = sectionsanddata[1].strip()
+  for line in data_raw.splitlines():
+    key = re_generickeyvalue.match(line).group(1).strip()
+    value = re_generickeyvalue.match(line).group(2).strip()
+    sectiondata[key] = value;
+  sectionsanddata = sectionsanddata[2:]
+
+  layout[title] = sectiondata
+  
+#END CONFIGURATION FILE FOR LAYOUT
+
+
+
+class CueObject:
+  comment = ""
+  commands = []
+  def __init__(self, comment, commands):
+    self.comment = comment
+    self.commands = commands
+
+#READ CONFIGURATION FILE FOR CUES
 
 cues = [];
 
-f = open('./cues.txt', 'r').read()
+f = open(settings["cuesfile"], 'r').read()
 
 sectionsanddata = re_startsection.split(f)[1:]
 
@@ -85,7 +112,6 @@ while sectionsanddata:
   cues.append(a);
   
   sectionsanddata = sectionsanddata[2:]
-
 #END CUE
 
 
@@ -96,6 +122,8 @@ while sectionsanddata:
 
 def runCommand(buffer):
   if buffer:
+    if buffer == "close":
+      sys.exit();
     global curcue;
     if buffer[0] == "^":
       if buffer[1] == "k":
@@ -134,83 +162,97 @@ def keyeventhandle(event):
   else:
     buffer = buffer + event.unicode;
     
-    
-    ###NOT YET CLEANED UP###
+def tocolortuple(hexstring):
+  r = int(hexstring[0:2], 16)
+  g = int(hexstring[2:4], 16)
+  b = int(hexstring[4:6], 16)
+  return r,g,b
   
-size = width, height = 500,500
-speed = [2, 2]
-background = 150, 196, 242
+def run():
+  size = width, height = int(settings["windowwidth"]),int(settings["windowheight"])
+  background = tocolortuple(settings["undefinedcolor"])
+  if settings["fullscreen"] == "True":
+    screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
+  else:
+    screen = pygame.display.set_mode(size)
 
-screen = pygame.display.set_mode(size)
+  size = width, height = screen.get_size() 
 
-size = width, height = screen.get_size() 
+  settings["screenwidth"] = width;
+  settings["screenheight"] = height;
 
-myfont = pygame.font.SysFont("Courier New", 15)
-
-while 1:
-    #EventHandle
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT: sys.exit();
-        if event.type == pygame.KEYDOWN: keyeventhandle(event);
-        if event.type >= SONG_END: sm.handleSignal(event);
-    
-    #Process
-
-    #--Draw--
-    #Clear The Screen
-    screen.fill(background)
-    
-    
-    #Draw The Contents of the Text Buffer
-    
-    surf = pygame.Surface((400,50))
-    pygame.draw.rect(surf, (200,200,200), pygame.Rect(3, 3, 394, 44), 0)
-    label = myfont.render(buffer, 1, (0,0,0))
-    surf.blit(label, (3, 3))
-    screen.blit(surf, (0, 0))
-
-    surf = pygame.Surface((200,50))
-    pygame.draw.rect(surf, (100,100,100), pygame.Rect(3, 3, 194, 44), 0)
-    label = myfont.render("Cue up next:", 1, (0,0,0))
-    surf.blit(label, (3, 3))
-    screen.blit(surf, (0, 150))
-    
-  #  cuesurf = pygame.Surface((50,50))
-  #  pygame.draw.rect(cuesurf, (200,200,200), pygame.Rect(3, 3, 74, 44), 0)
-  #  label = myfont.render(str(curcue), 1, (0,0,0))
-  #  cuesurf.blit(label, (3, 3))
-  #  screen.blit(cuesurf, (0,55))
-
-    cuelogssurf = pygame.Surface((500,100))
-    for i in range(0, 5):
-      io = curcue + (i - 2)
-      if io < 0 or io >= len(cues):
-        curcueobj = CueObject("","");
-      else:
-        curcueobj = cues[io]
-      if i == 2:
-        label = myfont.render(str(io) + "> " + curcueobj.comment, 1, (255,255,255))
-      else:
-        label = myfont.render(str(io) + "  " + curcueobj.comment, 1, (255,255,255))
-      cuelogssurf.blit(label, (3, 3+(20*i)))
-    screen.blit(cuelogssurf, (0,200))
-    
-    #i = 0;
-    #for sound in sounds:
-      #surf = pygame.Surface((100,100))
-      #pygame.draw.rect(surf, (200,200,200), pygame.Rect(3, 3, 96, 96), 0)
+  myfont = pygame.font.SysFont(settings["font"], int(settings["fontsize"]))
+  while 1:
+      #EventHandle
+      for event in pygame.event.get():
+          if event.type == pygame.QUIT: sys.exit();
+          if event.type == pygame.KEYDOWN: keyeventhandle(event);
       
-      # pick a font you have and set its size
+      #--Draw--
+      #Clear The Screen
+      screen.fill(background)
       
-      #textcolor = (255,255,0)
-      #if sound.isplaying:
-      #  textcolor = (255,0,255)
+      for section in layout:
+        actual_width = (int(layout[section]["width"]) * settings["screenwidth"]) / 100
+        actual_height = (int(layout[section]["height"]) * settings["screenheight"]) / 100
+        surf = pygame.Surface((actual_width,actual_height))
+        pygame.draw.rect(surf, tocolortuple(layout[section]["bordercolor"]), pygame.Rect(0, 0, actual_width, actual_height), 0)
+        bordersize = int(layout[section]["bordersize"])
+        pygame.draw.rect(surf, tocolortuple(layout[section]["backgroundcolor"]), pygame.Rect(0+bordersize, 0+bordersize, actual_width-(bordersize*2), actual_height-(bordersize*2)), 0)
+        if section == "Prompt":
+          #Draw The Contents of the Text Buffer
+          label = myfont.render(buffer, 1, tocolortuple(layout[section]["color"]))
+          surf.blit(label, (int(layout[section]["padding"]) + bordersize, int(layout[section]["padding"]) + bordersize))
+        if section == "Cues":
+          #figure out how many cues can fit in the window
+          numcues = (actual_height-(int(layout[section]["padding"]) + bordersize)) / (int(settings["fontsize"]) + int(layout[section]["linespacing"])); 
+          for i in range(0, numcues):
+            io = curcue + (i - numcues/2)
+            if io < 0 or io >= len(cues):
+              curcueobj = CueObject("","");
+            else:
+              curcueobj = cues[io]
+            if i == numcues/2:
+              label = myfont.render(str(io).rjust(3) + " Next: " + curcueobj.comment, 1, tocolortuple(layout[section]["color"]))
+            else:
+              label = myfont.render(str(io).rjust(3) + "       " + curcueobj.comment, 1, tocolortuple(layout[section]["color"]))
+            labelloc = (
+                          int(layout[section]["padding"]) + bordersize,
+                          int(layout[section]["padding"]) + bordersize + ((int(layout[section]["linespacing"]) + int(settings["fontsize"])  )*i)
+                       )
+            surf.blit(label, labelloc)        
+        screen.blit(surf, ((int(layout[section]["x"]) * settings["screenwidth"]) / 100, (int(layout[section]["y"]) * settings["screenheight"]) / 100))          
+
+#          surf = pygame.Surface((200,50))
+#          pygame.draw.rect(surf, (100,100,100), pygame.Rect(3, 3, 194, 44), 0)
+#          label = myfont.render("Cue up next:", 1, (0,0,0))
+#          surf.blit(label, (3, 3))
+#          screen.blit(surf, (0, 150))
       
-      # apply it to text on a label
-      #label = myfont.render(sound.name, 1, textcolor)
-      #surf.blit(label, (10, 10))
+    #  cuesurf = pygame.Surface((50,50))
+    #  pygame.draw.rect(cuesurf, (200,200,200), pygame.Rect(3, 3, 74, 44), 0)
+    #  label = myfont.render(str(curcue), 1, (0,0,0))
+    #  cuesurf.blit(label, (3, 3))
+    #  screen.blit(cuesurf, (0,55))
+
+      #i = 0;
+      #for sound in sounds:
+        #surf = pygame.Surface((100,100))
+        #pygame.draw.rect(surf, (200,200,200), pygame.Rect(3, 3, 96, 96), 0)
         
-      #screen.blit(surf, (2 + (102*i), 52))
-      #i=i+1
+        # pick a font you have and set its size
+        
+        #textcolor = (255,255,0)
+        #if sound.isplaying:
+        #  textcolor = (255,0,255)
+        
+        # apply it to text on a label
+        #label = myfont.render(sound.name, 1, textcolor)
+        #surf.blit(label, (10, 10))
+          
+        #screen.blit(surf, (2 + (102*i), 52))
+        #i=i+1
+        
+      pygame.display.flip()
       
-    pygame.display.flip()
+run()
