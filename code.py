@@ -26,11 +26,9 @@ pygame.mixer.set_num_channels(int(settings["num_channels"]))
 class SoundDataObject:
   soundobj = "";
   data = {};
-  commands = {};
-  def __init__(self, soundobj, data, commands):
+  def __init__(self, soundobj, data):
     self.soundobj = soundobj;
     self.data = data;
-    self.commands = commands;
 
 #READ CONFIGURATION FILE FOR SOUNDS
 sounds = [];
@@ -41,25 +39,18 @@ sectionsanddata = re_startsection.split(f)[1:]
 
 while sectionsanddata:
   data = {}
-  commands = {}
   section = sectionsanddata[0].strip()
   soundobj = pygame.mixer.Sound("./Sounds/" + section)
   data_raw = sectionsanddata[1].strip()
   for line in data_raw.splitlines():
     print line;
-    if re_command.match(line):
-      key = re_command.match(line).group(1).strip()
-      value = re_command.match(line).group(2).strip()
-      commands[key] = value;
-      
-    if re_data.match(line):
-      key = re_data.match(line).group(1).strip()
-      value = re_data.match(line).group(2).strip()
-      data[key] = value;
+    key = re_generickeyvalue.match(line).group(1).strip()
+    value = re_generickeyvalue.match(line).group(2).strip()
+    data[key] = value;
   sectionsanddata = sectionsanddata[2:]
 
   
-  a = SoundDataObject(soundobj, data, commands);
+  a = SoundDataObject(soundobj, data);
   sounds.append(a);
 
 
@@ -117,30 +108,50 @@ while sectionsanddata:
 
 
 
-
-  
-
-def runCommand(buffer): #TODO: set responsecode, to the response of the command
-  global responsecode;
+def runCommand(buffer):
+  buffer = buffer.strip()
   if buffer:
-    if buffer == "close":
+    buffer = buffer.split(" ")
+    if buffer[0] == "close" or buffer[0] == "exit":
       sys.exit();
-    global curcue;
-    if buffer[0] == "^":
-      if buffer[1] == "k":
+    if buffer[0] == "goto":
+      global curcue
+      curcue = int(buffer[1])
+      return "Next cue is now cue "+ str(curcue);
+    if buffer[0] == "fade":
+      if buffer[2] == "all":
         for asound in sounds:
-          asound.soundobj.fadeout(500);
-          responsecode = "Faded all sounds"
-      if buffer[1] == "g":
-        curcue = int(buffer[2:])
-    else:
+          asound.soundobj.fadeout(int(buffer[1])*1000);
+        return "Faded all sounds"
+      else:
+        for asound in sounds:
+          if asound.data["command"] == buffer[2]:
+            asound.soundobj.fadeout(int(buffer[1])*1000);
+        return "Faded requested sound"
+    if buffer[0] == "silence":
+      if buffer[1] == "all":
+        for asound in sounds:
+          asound.soundobj.stop();
+        return "Silenced all sounds"
+      else:
+        for asound in sounds:
+          if asound.data["command"] == buffer[1]:
+            asound.soundobj.stop();
+        return "Silenced requested sound"
+    if buffer[0] == "play":
       for asound in sounds:
-        if buffer in asound.commands:
-          if asound.commands[buffer] == "play":
-            asound.soundobj.play();
-          if asound.commands[buffer][0:4] == "fade":
-            asound.soundobj.fadeout(int(asound.commands[buffer][5:]) * 1000)
-
+        if asound.data["command"] == buffer[1]:
+          asound.soundobj.play();
+      return "Playing requested sound"
+    if buffer[0] == "loop":
+      for asound in sounds:
+        if asound.data["command"] == buffer[1]:
+          asound.soundobj.play(loops = -1);
+      return "Playing requested sound"
+    return "That command was not found"
+  else:
+    return "You did not enter a command"
+    
 def runCue(cue):
   for command in cues[cue].commands:
     runCommand(command);
@@ -148,21 +159,18 @@ def runCue(cue):
 curcue = 0;
 buffer = "";
 lastcommand = "";
-lastresponse = ""; #this is only set for commands invoked by the terminal
-responsecode = ""; #this is set for every command
+lastresponse = "";
 
 def keyeventhandle(event):
   global curcue;
   global buffer;
   global lastcommand;
   global lastresponse;
-  global responsecode;
   if event.unicode == '\r':
     lastcommand = (buffer);
-    runCommand(buffer);
-    lastresponse = responsecode;
+    lastresponse = runCommand(buffer);
     buffer = "";
-  elif event.unicode == ' ':
+  elif event.unicode == '\t':
     if curcue >= len(cues):
       curcue = -1;
     runCue(curcue)
