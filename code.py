@@ -12,7 +12,7 @@ pygame.init()
 settings = {};
 
 #READ GENERIC CONFIGURATION FILE settings.txt
-f = open('./settings.txt', 'r').read()
+f = open('./Settings/settings.txt', 'r').read()
 for line in f.splitlines():
   key = re_generickeyvalue.match(line).group(1).strip()
   value = re_generickeyvalue.match(line).group(2).strip()
@@ -33,7 +33,7 @@ class SoundDataObject:
 #READ CONFIGURATION FILE FOR SOUNDS
 sounds = [];
 
-f = open(settings["soundfile"], 'r').read()
+f = open("./Settings/" + settings["soundfile"], 'r').read()
 
 sectionsanddata = re_startsection.split(f)[1:]
 
@@ -56,7 +56,7 @@ while sectionsanddata:
 
 #READ CONFIGURATION FILE FOR LAYOUT
 layout = {};
-f = open(settings["layoutfile"], 'r').read()
+f = open("./Settings/" + settings["layoutfile"], 'r').read()
 
 sectionsanddata = re_startsection.split(f)[1:]
 
@@ -87,7 +87,7 @@ class CueObject:
 
 cues = [];
 
-f = open(settings["cuesfile"], 'r').read()
+f = open("./Settings/" + settings["cuesfile"], 'r').read()
 
 sectionsanddata = re_startsection.split(f)[1:]
 
@@ -109,7 +109,7 @@ while sectionsanddata:
 
 
 def runCommand(buffer):
-  buffer = buffer.strip()
+  buffer = buffer.strip().lower()
   if buffer:
     buffer = buffer.split(" ")
     if buffer[0] == "close" or buffer[0] == "exit":
@@ -125,7 +125,7 @@ def runCommand(buffer):
         return "Faded all sounds"
       else:
         for asound in sounds:
-          if asound.data["command"] == buffer[2]:
+          if asound.data["keyword"] == buffer[2]:
             asound.soundobj.fadeout(int(buffer[1])*1000);
         return "Faded requested sound"
     if buffer[0] == "silence":
@@ -135,17 +135,17 @@ def runCommand(buffer):
         return "Silenced all sounds"
       else:
         for asound in sounds:
-          if asound.data["command"] == buffer[1]:
+          if asound.data["keyword"] == buffer[1]:
             asound.soundobj.stop();
         return "Silenced requested sound"
     if buffer[0] == "play":
       for asound in sounds:
-        if asound.data["command"] == buffer[1]:
+        if asound.data["keyword"] == buffer[1]:
           asound.soundobj.play();
       return "Playing requested sound"
     if buffer[0] == "loop":
       for asound in sounds:
-        if asound.data["command"] == buffer[1]:
+        if asound.data["keyword"] == buffer[1]:
           asound.soundobj.play(loops = -1);
       return "Playing requested sound"
     return "That command was not found"

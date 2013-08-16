@@ -1,3 +1,5 @@
+Make it so that errors are handled gracefully, 
+Comment lines are not being ignored
 Investigate the possiblity of an alias.txt
   Ex:
     sounds.txt:
