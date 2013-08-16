@@ -1,4 +1,4 @@
 [DR/BookP1-1.ogg]
 
 name = BOOK 1-1
-command = b1-1
+keyword = b1-1
