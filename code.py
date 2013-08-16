@@ -120,7 +120,8 @@ while sectionsanddata:
 
   
 
-def runCommand(buffer):
+def runCommand(buffer): #TODO: set responsecode, to the response of the command
+  global responsecode;
   if buffer:
     if buffer == "close":
       sys.exit();
@@ -129,6 +130,7 @@ def runCommand(buffer):
       if buffer[1] == "k":
         for asound in sounds:
           asound.soundobj.fadeout(500);
+          responsecode = "Faded all sounds"
       if buffer[1] == "g":
         curcue = int(buffer[2:])
     else:
@@ -145,12 +147,20 @@ def runCue(cue):
 
 curcue = 0;
 buffer = "";
+lastcommand = "";
+lastresponse = ""; #this is only set for commands invoked by the terminal
+responsecode = ""; #this is set for every command
 
 def keyeventhandle(event):
   global curcue;
   global buffer;
+  global lastcommand;
+  global lastresponse;
+  global responsecode;
   if event.unicode == '\r':
+    lastcommand = (buffer);
     runCommand(buffer);
+    lastresponse = responsecode;
     buffer = "";
   elif event.unicode == ' ':
     if curcue >= len(cues):
@@ -168,6 +178,7 @@ def tocolortuple(hexstring):
   b = int(hexstring[4:6], 16)
   return r,g,b
   
+  
 def run():
   size = width, height = int(settings["windowwidth"]),int(settings["windowheight"])
   background = tocolortuple(settings["undefinedcolor"])
@@ -176,8 +187,7 @@ def run():
   else:
     screen = pygame.display.set_mode(size)
 
-  size = width, height = screen.get_size() 
-
+  size = width, height = screen.get_size()
   settings["screenwidth"] = width;
   settings["screenheight"] = height;
 
@@ -199,6 +209,20 @@ def run():
         pygame.draw.rect(surf, tocolortuple(layout[section]["bordercolor"]), pygame.Rect(0, 0, actual_width, actual_height), 0)
         bordersize = int(layout[section]["bordersize"])
         pygame.draw.rect(surf, tocolortuple(layout[section]["backgroundcolor"]), pygame.Rect(0+bordersize, 0+bordersize, actual_width-(bordersize*2), actual_height-(bordersize*2)), 0)
+        if section == "Response":
+          #Draw the response of the last command
+          label = myfont.render("Ran: "+lastcommand, 1, tocolortuple(layout[section]["commandcolor"]))
+          surf.blit(label, (int(layout[section]["padding"]) + bordersize, int(layout[section]["padding"]) + bordersize))
+          t = 1
+          for line in lastresponse.splitlines():
+            label = myfont.render(line, 1, tocolortuple(layout[section]["responsecolor"]))
+            surf.blit(label, 
+                             (
+                               int(layout[section]["padding"]) + bordersize,
+                               int(layout[section]["padding"]) + bordersize + (int(settings["fontsize"])*t)
+                             )
+                      )
+            t += 1
         if section == "Prompt":
           #Draw The Contents of the Text Buffer
           label = myfont.render(buffer, 1, tocolortuple(layout[section]["color"]))

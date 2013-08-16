@@ -3,20 +3,32 @@ x = 0
 y = 90
 width = 100
 height = 10
-backgroundcolor = 00FF00
-bordercolor = FF0000
-bordersize = 6
-color = 0000FF
+backgroundcolor = 000000
+bordercolor = 5555FF
+color = 00AA00
+bordersize = 3
+padding = 3
+
+[Response]
+x = 70
+y = 0
+width = 30
+height = 90
+backgroundcolor = 000000
+bordercolor = 5555FF
+commandcolor = 00AA00
+responsecolor = FFFFFF
+bordersize = 3
 padding = 3
 
 [Cues]
 x = 0
 y = 0
-width = 100
+width = 70
 height = 90
-backgroundcolor = 00FF00
-bordercolor = FF0000
-bordersize = 6
-color = 0000FF
+backgroundcolor = 000000
+bordercolor = 5555FF
+color = 00AA00
+bordersize = 3
 padding = 3
 linespacing = 3
