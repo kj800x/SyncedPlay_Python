@@ -54,7 +54,7 @@ class SectionedSettingsFile {
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(KvSectionsFile.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SectionedSettingsFile.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

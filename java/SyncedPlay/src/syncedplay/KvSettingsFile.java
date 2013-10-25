@@ -31,13 +31,13 @@ re_command = re.compile(r"\^(.*)=(.*)")
 re_comment = re.compile(r"#.*$")
 
  */
-class KvSectionsFile {
+class KvSettingsFile {
 
     HashMap<String, String> dictionary = new HashMap();
     Pattern genericKeyValue = Pattern.compile("(.*)=(.*)");
     
     /** This initializer will read the file and generate the keyvalue dictionary based upon what it reads */
-    public KvSectionsFile(String filename) throws FileNotFoundException {
+    public KvSettingsFile(String filename) throws FileNotFoundException {
         FileReader fileReader = new FileReader(new File(filename));
         BufferedReader br = new BufferedReader(fileReader);
         ReadData(br);
@@ -49,13 +49,13 @@ class KvSectionsFile {
             while ((line = br.readLine()) != null) {
                 // For each line, read a key-value pair and store it
                 Matcher matches = genericKeyValue.matcher(line);
+                matches.find();
                 String key = matches.group(1);
                 String value = matches.group(2);
                 dictionary.put(key, value);
             }
         } catch (IOException e) {
-            Logger.getLogger(KvSectionsFile.class.getName()).log(Level.SEVERE, null, e);
-
+            Logger.getLogger(KvSettingsFile.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 }
