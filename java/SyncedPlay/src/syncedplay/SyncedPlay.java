@@ -20,11 +20,12 @@ public class SyncedPlay {
         SectionedSettingsFile soundSettings = new SectionedSettingsFile("/home/kevin/SyncedPlay/SyncedPlay/java/SyncedPlay/src/syncedplay/Settings/sounds.txt");
         SectionedSettingsFile layoutSettings = new SectionedSettingsFile("/home/kevin/SyncedPlay/SyncedPlay/java/SyncedPlay/src/syncedplay/Settings/genericlayout.txt");
         KvSettingsFile genericSettings = new KvSettingsFile("/home/kevin/SyncedPlay/SyncedPlay/java/SyncedPlay/src/syncedplay/Settings/settings.txt");
+        SectionsAndListSettingsFile cueFile = new SectionsAndListSettingsFile("/home/kevin/SyncedPlay/SyncedPlay/java/SyncedPlay/src/syncedplay/Settings/cues.txt");
 
-        // TODO: SectionAndListSettingsFile
         System.out.println(soundSettings.dictionary.toString());
         System.out.println(layoutSettings.dictionary.toString());
         System.out.println(genericSettings.dictionary.toString());
+        System.out.println(cueFile.dictionary.toString());
 
 
 	// init OpenGL
