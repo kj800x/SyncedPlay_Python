@@ -116,19 +116,25 @@ def runCommand(buffer):
       sys.exit();
     if buffer[0] == "goto":
       global curcue
-      curcue = int(buffer[1])
+      if buffer[1] == "next":
+        curcue = curcue + 1
+      elif buffer[1] == "previous":
+        curcue = curcue - 1
+      else:
+        curcue = int(buffer[1])
       return "Next cue is now cue "+ str(curcue);
     if buffer[0] == "fade":
+      if len(buffer) == 2:
+        buffer = [buffer[0],"1",buffer[1]]
       if buffer[2] == "all":
         for asound in sounds:
           asound.soundobj.fadeout(int(buffer[1])*1000);
         return "Faded all sounds"
       else:
         for asound in sounds:
-          if asound.data["keyword"] == buffer[2]:
             asound.soundobj.fadeout(int(buffer[1])*1000);
         return "Faded requested sound"
-    if buffer[0] == "silence":
+    if buffer[0] == "silence" or buffer[0] == "stop":
       if buffer[1] == "all":
         for asound in sounds:
           asound.soundobj.stop();
@@ -166,7 +172,11 @@ def keyeventhandle(event):
   global buffer;
   global lastcommand;
   global lastresponse;
-  if event.unicode == '\r':
+  if event.unicode == '>':
+    runCommand("goto next")
+  elif event.unicode == '<':
+    runCommand("goto previous")
+  elif event.unicode == '\r':
     lastcommand = (buffer);
     lastresponse = runCommand(buffer);
     buffer = "";
@@ -228,6 +238,28 @@ def run():
                              (
                                int(layout[section]["padding"]) + bordersize,
                                int(layout[section]["padding"]) + bordersize + (int(settings["fontsize"])*t)
+                             )
+                      )
+            t += 1
+        if section == "Sounds List":
+          #Draw the list of possible sounds
+          label = myfont.render("Loaded Sounds: ", 1, tocolortuple(layout[section]["color"]))
+          surf.blit(label, (int(layout[section]["padding"]) + bordersize, int(layout[section]["padding"]) + bordersize))
+          t = 1
+          for asound in sounds:
+            label = myfont.render(asound.data["name"], 1, tocolortuple(layout[section]["color"]))
+            surf.blit(label, 
+                             (
+                               int(layout[section]["padding"]) + bordersize,
+                               int(layout[section]["padding"]) + bordersize + (int(settings["fontsize"])*2*t)
+                             )
+                      )
+                      
+            label = myfont.render("    " + asound.data["keyword"], 1, tocolortuple(layout[section]["keycolor"]))
+            surf.blit(label, 
+                             (
+                               int(layout[section]["padding"]) + bordersize,
+                               int(layout[section]["padding"]) + bordersize + (int(settings["fontsize"])*((2*t)+1))
                              )
                       )
             t += 1

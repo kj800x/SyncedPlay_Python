@@ -9,6 +9,7 @@ color = 00AA00
 bordersize = 3
 padding = 3
 
+
 [Response]
 x = 70
 y = 0
@@ -21,10 +22,22 @@ responsecolor = FFFFFF
 bordersize = 3
 padding = 3
 
+[Sounds List]
+x = 50
+y = 0
+width = 20
+height = 90
+backgroundcolor = 000000
+bordercolor = 5555FF
+color = 00AA00
+keycolor = FF7F00
+bordersize = 3
+padding = 3
+
 [Cues]
 x = 0
 y = 0
-width = 70
+width = 50
 height = 90
 backgroundcolor = 000000
 bordercolor = 5555FF

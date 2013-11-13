@@ -1,37 +1,76 @@
-[Book On Page 1]#1
-play b1-1
-[Book On Page 1 (2)]#1
-pb1-2
-[Book On Page 2]#2
-pb2-1
-[Book On Page 16]#3
-pb16-1
-[Jones On Page 22]#4
-pj22-1
-[Jones On Page 22 (2)]#5
-pj22-2
-[Jones On Page 23]#6
-pj23-1
-[Jones On Page 23 (2)]#7
-pj23-2
-[Jones On Page 39 (1)]#8
-pj39-1
-[Jones On Page 23 (2)]#9
-pj39-2
-[Book On Page 41]#10
-pb41-1
-[Frank On Page 64]#11
-pf64-1
-[Book On Page 66]#12
-pb66-1
-[Book On Page 66 (2)]#13
-pb66-2
-#
-#ACT TWO BEGINS ON 93
-#
-[Book On Page 99]#14
-pb99-1
-[Book On Page 115]#15
-pb115-1
-[Book On Page 128]#16
-pb128-1
+[Phone on Page 11]
+loop ring
+[Stop Phone]
+stop ring
+[Doorbell on Page 15]
+play doorbell
+[Doorbell on Page 16]
+play doorbell
+[Doorbell on Page 16 (2)]
+play doorbell
+[Doorbell on Page 16 (3)]
+play doorbell
+[Doorbell on Page 34]
+play doorbell
+[Doorbell on Page 35]
+play doorbell
+[Gunshot on Page 42]
+play gunshot
+[Phone on Page 43]
+loop ring
+[Stop Phone]
+stop ring
+[Phone Beep on 44]
+play phonebeep
+[Car Arriving on 50]
+play cararrive
+[Car Door Slam on 52]
+play doorslam
+[Doorbell on Page 52]
+play doorbell
+[Doorbell on Page 53]
+play doorbell
+[Doorbell on Page 53 (2)]
+play doorbell
+[Toilet Flush on Page 62]
+play flush
+[Toilet Flush on Page 62 (2)]
+play flush
+[Phone on Page 66]
+loop ring
+[Stop Phone]
+stop ring
+[CURTAIN FALLS - ACT 1 OVER]
+stop all
+[Intercom Buzz on Page 79]
+play intercom
+[Phone on Page 85]
+loop ring
+[Stop Phone (on next page)]
+stop ring
+[Phone on Page 89]
+loop ring
+[Stop Phone]
+stop ring
+[Doorbell on Page 90]
+play doorbell
+[Doorbell on Page 91 (ALL DROP TO THE FLOOR! MWHAHAHA)]
+play doorbell
+[Doorbell on Page 93]
+play doorbell
+[Doorbell on Page 94]
+play doorbell
+[La Bamba Starts on Page 90]
+play labamba
+[La Bamba stops]
+stop labamba
+[Walkie Talkie Squacks on Page 102]
+play squack
+[Walkie Talkie Squacks on Page 103]
+play squack
+[Car Drives Away on Page 112]
+play cardrivesaway
+[Intercom Buzz on Page 112]
+play intercom
+[CURTAIN FALLS - PLAY OVER]
+stop all
