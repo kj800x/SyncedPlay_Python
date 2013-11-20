@@ -1,3 +1,5 @@
+
+
 [Prompt]
 x = 0
 y = 90
@@ -14,7 +16,7 @@ padding = 3
 x = 70
 y = 0
 width = 30
-height = 90
+height = 85
 backgroundcolor = 000000
 bordercolor = 5555FF
 commandcolor = 00AA00
@@ -45,3 +47,14 @@ color = 00AA00
 bordersize = 3
 padding = 3
 linespacing = 3
+
+[Clock]
+x = 70
+y = 85
+width = 30
+height = 5
+backgroundcolor = 000000
+bordercolor = 5555FF
+color = FFFFFF
+bordersize = 3
+padding = 3

@@ -20,6 +20,10 @@ play gunshot
 loop ring
 [Stop Phone]
 stop ring
+[Phone on Page ??]
+loop ring
+[Stop Phone]
+stop ring
 [Phone Beep on 44]
 play phonebeep
 [Car Arriving on 50]
@@ -65,6 +69,10 @@ play labamba
 [La Bamba stops]
 stop labamba
 [Walkie Talkie Squacks on Page 102]
+play squack
+[Walkie Talkie Squacks on Page 102]
+play squack
+[Walkie Talkie Squacks on Page 103]
 play squack
 [Walkie Talkie Squacks on Page 103]
 play squack

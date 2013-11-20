@@ -1,6 +1,7 @@
 import sys, pygame
 import commands
 import re
+import time
 
 re_startsection = re.compile(r"\[(.*)\]")
 re_data = re.compile(r"\_(.*)=(.*)")
@@ -266,6 +267,10 @@ def run():
         if section == "Prompt":
           #Draw The Contents of the Text Buffer
           label = myfont.render(buffer, 1, tocolortuple(layout[section]["color"]))
+          surf.blit(label, (int(layout[section]["padding"]) + bordersize, int(layout[section]["padding"]) + bordersize))
+        if section == "Clock":
+          #Draw The Clock
+          label = myfont.render(time.strftime("%I:%M:%S %p"), 1, tocolortuple(layout[section]["color"]))
           surf.blit(label, (int(layout[section]["padding"]) + bordersize, int(layout[section]["padding"]) + bordersize))
         if section == "Cues":
           #figure out how many cues can fit in the window
