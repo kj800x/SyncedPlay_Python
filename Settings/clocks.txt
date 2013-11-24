@@ -1,0 +1,5 @@
+[startofplay]
+ExpectedTime = 1
+
+[StartOfAct2]
+ExpectedTime = 125

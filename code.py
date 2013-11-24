@@ -1,7 +1,8 @@
 import sys, pygame
 import commands
 import re
-import time
+import datetime 
+import string as String
 
 re_startsection = re.compile(r"\[(.*)\]")
 re_data = re.compile(r"\_(.*)=(.*)")
@@ -11,6 +12,20 @@ re_comment = re.compile(r"#.*$")
 
 pygame.init()
 settings = {};
+
+def strfdelta(tdelta, fmt):
+    d = {"days": tdelta.days}
+    d["hours"], rem = divmod(tdelta.seconds, 3600)
+    d["minutes"], d["seconds"] = divmod(rem, 60)
+    
+    d["minutes"] = '%02d' % d["minutes"];
+    d["hours"] = '%02d' % d["hours"];
+    d["seconds"] = '%02d' % d["seconds"];
+
+    return fmt.format(**d)
+
+
+
 
 #READ GENERIC CONFIGURATION FILE settings.txt
 f = open('./Settings/settings.txt', 'r').read()
@@ -74,7 +89,25 @@ while sectionsanddata:
   layout[title] = sectiondata
   
 #END CONFIGURATION FILE FOR LAYOUT
+#READ CONFIGURATION FILE FOR Timers
+timers = {};
+f = open("./Settings/" + settings["timerfile"], 'r').read()
 
+sectionsanddata = re_startsection.split(f)[1:]
+
+while sectionsanddata:
+  title = sectionsanddata[0].strip()
+  sectiondata = {}
+  data_raw = sectionsanddata[1].strip()
+  for line in data_raw.splitlines():
+    key = re_generickeyvalue.match(line).group(1).strip()
+    value = re_generickeyvalue.match(line).group(2).strip()
+    sectiondata[key] = value;
+  sectionsanddata = sectionsanddata[2:]
+  sectiondata["startedat"] = None;
+  timers[title] = sectiondata
+print(timers)
+#END CONFIGURATION FILE FOR Timers
 
 
 class CueObject:
@@ -115,6 +148,11 @@ def runCommand(buffer):
     buffer = buffer.split(" ")
     if buffer[0] == "close" or buffer[0] == "exit":
       sys.exit();
+    if buffer[0] == "clock":
+      if buffer[1] == "start":
+        timers[buffer[2]]["startedat"] = datetime.datetime.now()
+        timers[buffer[2]]["estendtime"] = datetime.datetime.now() + datetime.timedelta(minutes = int(timers[buffer[2]]["ExpectedTime"]))
+        return "Clock Started"
     if buffer[0] == "goto":
       global curcue
       if buffer[1] == "next":
@@ -270,8 +308,62 @@ def run():
           surf.blit(label, (int(layout[section]["padding"]) + bordersize, int(layout[section]["padding"]) + bordersize))
         if section == "Clock":
           #Draw The Clock
-          label = myfont.render(time.strftime("%I:%M:%S %p"), 1, tocolortuple(layout[section]["color"]))
+          label = myfont.render(datetime.datetime.now().strftime("%I:%M:%S %p"), 1, tocolortuple(layout[section]["color"]))
           surf.blit(label, (int(layout[section]["padding"]) + bordersize, int(layout[section]["padding"]) + bordersize))
+          line = 1;
+          #Draw Each Timer
+          for timer in timers:
+            label = myfont.render("[" + timer + "]", 1, tocolortuple(layout[section]["color"]))
+            surf.blit(label,
+                             (
+                               int(layout[section]["padding"]) + bordersize,
+                               int(layout[section]["padding"]) + bordersize + (int(settings["fontsize"])*((line)))
+                             )
+                      )
+            line = line+1;
+            if timers[timer]["startedat"] == None:
+              label = myfont.render(" Not Started Yet ", 1, tocolortuple(layout[section]["color"]))
+              surf.blit(label,
+                               (
+                                 int(layout[section]["padding"]) + bordersize,
+                                 int(layout[section]["padding"]) + bordersize + (int(settings["fontsize"])*((line)))
+                               )
+                        )
+              line = line +1;
+            else:
+              label = myfont.render("  Started At: "+ timers[timer]["startedat"].strftime("%I:%M:%S %p"), 1, tocolortuple(layout[section]["color"]))
+              surf.blit(label,
+                               (
+                                 int(layout[section]["padding"]) + bordersize,
+                                 int(layout[section]["padding"]) + bordersize + (int(settings["fontsize"])*((line)))
+                               )
+                        )
+              line = line +1;
+              label = myfont.render("  Time Elapsed: "+ strfdelta(datetime.datetime.now() - (timers[timer]["startedat"]), "{hours}:{minutes}:{seconds}"), 1, tocolortuple(layout[section]["color"]))
+              surf.blit(label,
+                               (
+                                 int(layout[section]["padding"]) + bordersize,
+                                 int(layout[section]["padding"]) + bordersize + (int(settings["fontsize"])*((line)))
+                               )
+                        )
+              line = line +1;
+              label = myfont.render("  Estimated Time Remaining: "+ strfdelta((timers[timer]["estendtime"] - datetime.datetime.now()), "{hours}:{minutes}:{seconds}"), 1, tocolortuple(layout[section]["color"]))
+              surf.blit(label,
+                               (
+                                 int(layout[section]["padding"]) + bordersize,
+                                 int(layout[section]["padding"]) + bordersize + (int(settings["fontsize"])*((line)))
+                               )
+                        )
+              line = line +1;
+              label = myfont.render("  Ending At: "+ timers[timer]["estendtime"].strftime("%I:%M:%S %p"), 1, tocolortuple(layout[section]["color"]))
+              surf.blit(label,
+                               (
+                                 int(layout[section]["padding"]) + bordersize,
+                                 int(layout[section]["padding"]) + bordersize + (int(settings["fontsize"])*((line)))
+                               )
+                        )
+              line = line +1;
+          
         if section == "Cues":
           #figure out how many cues can fit in the window
           numcues = (actual_height-(int(layout[section]["padding"]) + bordersize)) / (int(settings["fontsize"]) + int(layout[section]["linespacing"])); 
