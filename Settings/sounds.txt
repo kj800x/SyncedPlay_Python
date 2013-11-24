@@ -1,4 +1,62 @@
-[DR/BookP1-1.ogg]
+[phoneRing.ogg]
+name = Telephone Ring
+keyword = ring
 
-name = BOOK 1-1
-keyword = b1-1
+[doorbell.ogg]
+name = Doorbell
+keyword = doorbell
+
+[gunshot.ogg]
+name = Gunshot
+keyword = gunshot
+
+[phonebeep.ogg]
+name = Phone Beep
+keyword = phonebeep
+
+[cararrive.ogg]
+name = Car Arrives
+keyword = cararrive
+
+[platescrash.ogg]
+name = Kitchen Crash
+keyword = kitchencrash
+
+[doorslam.ogg]
+name = Door Slams
+keyword = doorslam
+
+[flush.ogg]
+name = Toilet Flushed
+keyword = flush
+
+[buzz.ogg]
+name = Intercom Buzz
+keyword = intercom
+
+[labamba.ogg]
+name = La Bamba
+keyword = labamba
+
+[static.ogg]
+name = Walkie Talkie Squack
+keyword = squack
+
+[cardrivesaway.ogg]
+name = Car Driving Away
+keyword = cardrivesaway
+
+
+
+[mc/C418 - Minecraft - Volume Alpha - 03 Subwoofer Lullaby.ogg]
+name = Subwoof
+keyword = mc_subwoof
+[mc/C418 - Minecraft - Volume Alpha - 08 Minecraft.ogg]
+name = MC
+keyword = mc_minecraft
+[mc/C418 - Minecraft - Volume Alpha - 07 Haggstrom.ogg]
+name = MC Hagstrom
+keyword = mc_hag
+[mc/C418 - Minecraft - Volume Alpha - 11 Mice on Venus.ogg]
+name = MC Mice on Venus
+keyword = mc_mice
