@@ -14,6 +14,11 @@ pygame.init()
 settings = {};
 
 def strfdelta(tdelta, fmt):
+    if tdelta.days < 0:
+      sign = "-"
+    else:
+      sign = " "
+    tdelta = abs(tdelta)
     d = {"days": tdelta.days}
     d["hours"], rem = divmod(tdelta.seconds, 3600)
     d["minutes"], d["seconds"] = divmod(rem, 60)
@@ -22,7 +27,8 @@ def strfdelta(tdelta, fmt):
     d["hours"] = '%02d' % d["hours"];
     d["seconds"] = '%02d' % d["seconds"];
 
-    return fmt.format(**d)
+
+    return sign + fmt.format(**d)
 
 
 
@@ -90,7 +96,7 @@ while sectionsanddata:
   
 #END CONFIGURATION FILE FOR LAYOUT
 #READ CONFIGURATION FILE FOR Timers
-timers = {};
+timers = [];
 f = open("./Settings/" + settings["timerfile"], 'r').read()
 
 sectionsanddata = re_startsection.split(f)[1:]
@@ -105,8 +111,9 @@ while sectionsanddata:
     sectiondata[key] = value;
   sectionsanddata = sectionsanddata[2:]
   sectiondata["startedat"] = None;
-  timers[title] = sectiondata
-print(timers)
+  sectiondata["endedat"] = None;
+  sectiondata["keyword"] = title;
+  timers.append(sectiondata);
 #END CONFIGURATION FILE FOR Timers
 
 
@@ -148,11 +155,18 @@ def runCommand(buffer):
     buffer = buffer.split(" ")
     if buffer[0] == "close" or buffer[0] == "exit":
       sys.exit();
-    if buffer[0] == "clock":
+    if buffer[0] == "clock" or buffer[0] == "timer":
       if buffer[1] == "start":
-        timers[buffer[2]]["startedat"] = datetime.datetime.now()
-        timers[buffer[2]]["estendtime"] = datetime.datetime.now() + datetime.timedelta(minutes = int(timers[buffer[2]]["ExpectedTime"]))
+        for timer in timers:
+          if timer["keyword"] == buffer[2]:
+            timer["startedat"] = datetime.datetime.now() - datetime.timedelta(microseconds = datetime.datetime.now().microsecond)
+            timer["estendtime"] = datetime.datetime.now() + datetime.timedelta(minutes = int(timer["ExpectedTime"]), microseconds = datetime.datetime.now().microsecond)
         return "Clock Started"
+      if buffer[1] == "stop" or buffer[1] == "end":
+        for timer in timers:
+          if timer["keyword"] == buffer[2]:
+            timer["endedat"] = datetime.datetime.now()
+        return "Clock Stoped"
     if buffer[0] == "goto":
       global curcue
       if buffer[1] == "next":
@@ -216,9 +230,10 @@ def keyeventhandle(event):
   elif event.unicode == '<':
     runCommand("goto previous")
   elif event.unicode == '\r':
-    lastcommand = (buffer);
-    lastresponse = runCommand(buffer);
-    buffer = "";
+    if buffer:
+      lastcommand = (buffer);
+      lastresponse = runCommand(buffer);
+      buffer = "";
   elif event.unicode == '\t':
     if curcue >= len(cues):
       curcue = -1;
@@ -226,6 +241,10 @@ def keyeventhandle(event):
     curcue = curcue + 1
   elif event.unicode == '\b':
     buffer = buffer[:-1]
+  elif event.key == pygame.K_UP:
+    buffer = lastcommand;
+  elif event.key == pygame.K_DOWN:
+    buffer = "";
   else:
     buffer = buffer + event.unicode;
     
@@ -308,12 +327,12 @@ def run():
           surf.blit(label, (int(layout[section]["padding"]) + bordersize, int(layout[section]["padding"]) + bordersize))
         if section == "Clock":
           #Draw The Clock
-          label = myfont.render(datetime.datetime.now().strftime("%I:%M:%S %p"), 1, tocolortuple(layout[section]["color"]))
+          label = myfont.render(datetime.datetime.now().strftime("%I:%M:%S %p"), 1, tocolortuple(layout[section]["clockcolor"]))
           surf.blit(label, (int(layout[section]["padding"]) + bordersize, int(layout[section]["padding"]) + bordersize))
           line = 1;
           #Draw Each Timer
           for timer in timers:
-            label = myfont.render("[" + timer + "]", 1, tocolortuple(layout[section]["color"]))
+            label = myfont.render("[" + timer["title"] + "] ("+timer["keyword"]+")", 1, tocolortuple(layout[section]["sectiontitlecolor"]))
             surf.blit(label,
                              (
                                int(layout[section]["padding"]) + bordersize,
@@ -321,8 +340,8 @@ def run():
                              )
                       )
             line = line+1;
-            if timers[timer]["startedat"] == None:
-              label = myfont.render(" Not Started Yet ", 1, tocolortuple(layout[section]["color"]))
+            if timer["startedat"] == None:
+              label = myfont.render(" Not Started Yet ", 1, tocolortuple(layout[section]["sectiondatacolor"]))
               surf.blit(label,
                                (
                                  int(layout[section]["padding"]) + bordersize,
@@ -331,7 +350,7 @@ def run():
                         )
               line = line +1;
             else:
-              label = myfont.render("  Started At: "+ timers[timer]["startedat"].strftime("%I:%M:%S %p"), 1, tocolortuple(layout[section]["color"]))
+              label = myfont.render("  Started At: "+ timer["startedat"].strftime("%I:%M:%S %p"), 1, tocolortuple(layout[section]["sectiondatacolor"]))
               surf.blit(label,
                                (
                                  int(layout[section]["padding"]) + bordersize,
@@ -339,30 +358,48 @@ def run():
                                )
                         )
               line = line +1;
-              label = myfont.render("  Time Elapsed: "+ strfdelta(datetime.datetime.now() - (timers[timer]["startedat"]), "{hours}:{minutes}:{seconds}"), 1, tocolortuple(layout[section]["color"]))
-              surf.blit(label,
-                               (
-                                 int(layout[section]["padding"]) + bordersize,
-                                 int(layout[section]["padding"]) + bordersize + (int(settings["fontsize"])*((line)))
-                               )
-                        )
-              line = line +1;
-              label = myfont.render("  Estimated Time Remaining: "+ strfdelta((timers[timer]["estendtime"] - datetime.datetime.now()), "{hours}:{minutes}:{seconds}"), 1, tocolortuple(layout[section]["color"]))
-              surf.blit(label,
-                               (
-                                 int(layout[section]["padding"]) + bordersize,
-                                 int(layout[section]["padding"]) + bordersize + (int(settings["fontsize"])*((line)))
-                               )
-                        )
-              line = line +1;
-              label = myfont.render("  Ending At: "+ timers[timer]["estendtime"].strftime("%I:%M:%S %p"), 1, tocolortuple(layout[section]["color"]))
-              surf.blit(label,
-                               (
-                                 int(layout[section]["padding"]) + bordersize,
-                                 int(layout[section]["padding"]) + bordersize + (int(settings["fontsize"])*((line)))
-                               )
-                        )
-              line = line +1;
+              if timer["endedat"] == None:
+                label = myfont.render("  Time Elapsed: "+ strfdelta(datetime.datetime.now() - (timer["startedat"]), "{hours}:{minutes}:{seconds}"), 1, tocolortuple(layout[section]["sectiondatacolor"]))
+                surf.blit(label,
+                                 (
+                                   int(layout[section]["padding"]) + bordersize,
+                                   int(layout[section]["padding"]) + bordersize + (int(settings["fontsize"])*((line)))
+                                 )
+                          )
+                line = line +1;
+                label = myfont.render("  Estimated Time Remaining: "+ strfdelta((timer["estendtime"] - datetime.datetime.now()), "{hours}:{minutes}:{seconds}"), 1, tocolortuple(layout[section]["sectiondatacolor"]))
+                surf.blit(label,
+                                 (
+                                   int(layout[section]["padding"]) + bordersize,
+                                   int(layout[section]["padding"]) + bordersize + (int(settings["fontsize"])*((line)))
+                                 )
+                          )
+                line = line +1;
+                label = myfont.render("  Ending At: "+ timer["estendtime"].strftime("%I:%M:%S %p"), 1, tocolortuple(layout[section]["sectiondatacolor"]))
+                surf.blit(label,
+                                 (
+                                   int(layout[section]["padding"]) + bordersize,
+                                   int(layout[section]["padding"]) + bordersize + (int(settings["fontsize"])*((line)))
+                                 )
+                          )
+                line = line +1;
+              else:
+                label = myfont.render("  Duration: "+ strfdelta((timer["endedat"]) - (timer["startedat"]), "{hours}:{minutes}:{seconds}"), 1, tocolortuple(layout[section]["sectiondatacolor"]))
+                surf.blit(label,
+                                 (
+                                   int(layout[section]["padding"]) + bordersize,
+                                   int(layout[section]["padding"]) + bordersize + (int(settings["fontsize"])*((line)))
+                                 )
+                          )
+                line = line +1;
+                label = myfont.render("  Ended At: "+ timer["endedat"].strftime("%I:%M:%S %p"), 1, tocolortuple(layout[section]["sectiondatacolor"]))
+                surf.blit(label,
+                                 (
+                                   int(layout[section]["padding"]) + bordersize,
+                                   int(layout[section]["padding"]) + bordersize + (int(settings["fontsize"])*((line)))
+                                 )
+                          )
+                line = line +1;
           
         if section == "Cues":
           #figure out how many cues can fit in the window

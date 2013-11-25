@@ -1,3 +1,6 @@
+[PLAY STARTS]
+timer start play
+timer start act_one
 [Phone on Page 11]
 loop ring
 [Stop Phone]
@@ -43,6 +46,12 @@ loop ring
 [Stop Phone]
 stop ring
 [CURTAIN FALLS - ACT 1 OVER]
+timer stop act_one
+timer start intermission
+stop all
+[CURTAIN OPENS - ACT 2 STARTS]
+timer stop intermission
+timer start act_two
 stop all
 [Intercom Buzz on Page 79]
 play intercom
@@ -79,4 +88,6 @@ play cardrivesaway
 [Intercom Buzz on Page 112]
 play intercom
 [CURTAIN FALLS - PLAY OVER]
+timer stop act_two
+timer stop play
 stop all
