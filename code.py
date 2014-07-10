@@ -30,11 +30,22 @@ def strfdelta(tdelta, fmt):
 
     return sign + fmt.format(**d)
 
-
+def removecomments(f):
+  r = "";
+  for line in f.splitlines():
+    if line:
+      if line[0] == "#":
+        pass
+      else:
+        r += line + "\n";
+  return r;
 
 
 #READ GENERIC CONFIGURATION FILE settings.txt
 f = open('./Settings/settings.txt', 'r').read()
+
+f = removecomments(f);
+
 for line in f.splitlines():
   key = re_generickeyvalue.match(line).group(1).strip()
   value = re_generickeyvalue.match(line).group(2).strip()
@@ -56,6 +67,8 @@ class SoundDataObject:
 sounds = [];
 
 f = open("./Settings/" + settings["soundfile"], 'r').read()
+
+f = removecomments(f);
 
 sectionsanddata = re_startsection.split(f)[1:]
 
@@ -80,6 +93,8 @@ while sectionsanddata:
 layout = {};
 f = open("./Settings/" + settings["layoutfile"], 'r').read()
 
+f = removecomments(f);
+
 sectionsanddata = re_startsection.split(f)[1:]
 
 while sectionsanddata:
@@ -98,6 +113,8 @@ while sectionsanddata:
 #READ CONFIGURATION FILE FOR Timers
 timers = [];
 f = open("./Settings/" + settings["timerfile"], 'r').read()
+
+f = removecomments(f);
 
 sectionsanddata = re_startsection.split(f)[1:]
 
@@ -129,6 +146,8 @@ class CueObject:
 cues = [];
 
 f = open("./Settings/" + settings["cuesfile"], 'r').read()
+
+f = removecomments(f);
 
 sectionsanddata = re_startsection.split(f)[1:]
 
@@ -227,6 +246,8 @@ def keyeventhandle(event):
   global lastresponse;
   if event.unicode == '>':
     runCommand("goto next")
+  elif event.unicode == '!':
+    runCommand("silence all")
   elif event.unicode == '<':
     runCommand("goto previous")
   elif event.unicode == '\r':
