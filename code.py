@@ -1,8 +1,11 @@
-import sys, pygame
+import sys, os, pygame
 import commands
 import re
 import datetime 
 import string as String
+
+if (os.name == "posix"):
+  os.system("amixer sset 'Master' 100%")
 
 re_startsection = re.compile(r"\[(.*)\]")
 re_data = re.compile(r"\_(.*)=(.*)")
