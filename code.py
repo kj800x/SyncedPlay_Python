@@ -3,6 +3,14 @@ import commands
 import re
 import datetime 
 import string as String
+import logging
+
+formatstring = "%Y-%m-%d_%H-%M-%S.log";
+
+curtime = datetime.datetime.strftime(datetime.datetime.now(), formatstring);
+
+logging.basicConfig(filename= 'Logs/' + curtime, level=logging.INFO)
+logging.info('So should this')
 
 if (os.name == "posix"):
   os.system("amixer sset 'Master' 100%")
@@ -68,29 +76,27 @@ class SoundDataObject:
 
 #READ CONFIGURATION FILE FOR SOUNDS
 sounds = [];
+def readconfsound(show):
+  global sounds;
+  sounds = [];
+  f = open("./Shows/" + show + "/" + settings["soundfile"], 'r').read()
+  f = removecomments(f);
+  sectionsanddata = re_startsection.split(f)[1:]
+  while sectionsanddata:
+    data = {}
+    section = sectionsanddata[0].strip()
+    soundobj = pygame.mixer.Sound("./Shows/" + show + "/Sounds/" + section)
+    data_raw = sectionsanddata[1].strip()
+    for line in data_raw.splitlines():
+      print line;
+      key = re_generickeyvalue.match(line).group(1).strip()
+      value = re_generickeyvalue.match(line).group(2).strip()
+      data[key] = value;
+    sectionsanddata = sectionsanddata[2:]
+    a = SoundDataObject(soundobj, data);
+    sounds.append(a);
 
-f = open("./Settings/" + settings["soundfile"], 'r').read()
-
-f = removecomments(f);
-
-sectionsanddata = re_startsection.split(f)[1:]
-
-while sectionsanddata:
-  data = {}
-  section = sectionsanddata[0].strip()
-  soundobj = pygame.mixer.Sound("./Sounds/" + section)
-  data_raw = sectionsanddata[1].strip()
-  for line in data_raw.splitlines():
-    print line;
-    key = re_generickeyvalue.match(line).group(1).strip()
-    value = re_generickeyvalue.match(line).group(2).strip()
-    data[key] = value;
-  sectionsanddata = sectionsanddata[2:]
-
-  
-  a = SoundDataObject(soundobj, data);
-  sounds.append(a);
-
+readconfsound(settings["startupshow"])
 
 #READ CONFIGURATION FILE FOR LAYOUT
 layout = {};
@@ -115,25 +121,29 @@ while sectionsanddata:
 #END CONFIGURATION FILE FOR LAYOUT
 #READ CONFIGURATION FILE FOR Timers
 timers = [];
-f = open("./Settings/" + settings["timerfile"], 'r').read()
 
-f = removecomments(f);
+def readconftimer(show):
+  global timers;
+  timers = [];
+  f = open("./Shows/" + show + "/" + settings["timerfile"], 'r').read()
+  f = removecomments(f);
+  sectionsanddata = re_startsection.split(f)[1:]
+  while sectionsanddata:
+    title = sectionsanddata[0].strip()
+    sectiondata = {}
+    data_raw = sectionsanddata[1].strip()
+    for line in data_raw.splitlines():
+      key = re_generickeyvalue.match(line).group(1).strip()
+      value = re_generickeyvalue.match(line).group(2).strip()
+      sectiondata[key] = value;
+    sectionsanddata = sectionsanddata[2:]
+    sectiondata["startedat"] = None;
+    sectiondata["endedat"] = None;
+    sectiondata["keyword"] = title;
+    timers.append(sectiondata);
 
-sectionsanddata = re_startsection.split(f)[1:]
+readconftimer(settings["startupshow"])
 
-while sectionsanddata:
-  title = sectionsanddata[0].strip()
-  sectiondata = {}
-  data_raw = sectionsanddata[1].strip()
-  for line in data_raw.splitlines():
-    key = re_generickeyvalue.match(line).group(1).strip()
-    value = re_generickeyvalue.match(line).group(2).strip()
-    sectiondata[key] = value;
-  sectionsanddata = sectionsanddata[2:]
-  sectiondata["startedat"] = None;
-  sectiondata["endedat"] = None;
-  sectiondata["keyword"] = title;
-  timers.append(sectiondata);
 #END CONFIGURATION FILE FOR Timers
 
 
@@ -145,38 +155,44 @@ class CueObject:
     self.commands = commands
 
 #READ CONFIGURATION FILE FOR CUES
-
 cues = [];
 
-f = open("./Settings/" + settings["cuesfile"], 'r').read()
-
-f = removecomments(f);
-
-sectionsanddata = re_startsection.split(f)[1:]
-
-while sectionsanddata:
-  commands = []
-  comment = sectionsanddata[0].strip()
-  
-  data_raw = sectionsanddata[1].strip()
-  for line in data_raw.splitlines():
-    commands.append(line.strip())
-
-  a = CueObject(comment, commands);
-  cues.append(a);
-  
-  sectionsanddata = sectionsanddata[2:]
+def readconfcues(show):
+  global cues;
+  cues = [];
+  f = open("./Shows/" + show + "/" + settings["cuesfile"], 'r').read()
+  f = removecomments(f);
+  sectionsanddata = re_startsection.split(f)[1:]
+  while sectionsanddata:
+    commands = []
+    comment = sectionsanddata[0].strip()
+    data_raw = sectionsanddata[1].strip()
+    for line in data_raw.splitlines():
+      commands.append(line.strip())
+    a = CueObject(comment, commands);
+    cues.append(a);
+    sectionsanddata = sectionsanddata[2:]
+    
+readconfcues(settings["startupshow"]);
 #END CUE
 
 
 
 
 def runCommand(buffer):
+  origbuff = buffer.split(" ");
   buffer = buffer.strip().lower()
+  global curcue;
   if buffer:
     buffer = buffer.split(" ")
     if buffer[0] == "close" or buffer[0] == "exit":
       sys.exit();
+    if buffer[0] == "load" or buffer[0] == "open":
+      curcue = 0;
+      readconfcues(origbuff[1]);
+      readconfsound(origbuff[1]);
+      readconftimer(origbuff[1]);
+      return "Loaded "+ origbuff[1];
     if buffer[0] == "clock" or buffer[0] == "timer":
       if buffer[1] == "start":
         for timer in timers:
@@ -190,7 +206,6 @@ def runCommand(buffer):
             timer["endedat"] = datetime.datetime.now()
         return "Clock Stoped"
     if buffer[0] == "goto":
-      global curcue
       if buffer[1] == "next":
         curcue = curcue + 1
       elif buffer[1] == "previous":

@@ -1,0 +1,7 @@
+[CellPhone.ogg]
+name = Cell Phone Ring
+keyword = cell
+
+[RotaryPhone.ogg]
+name = Rotary Phone Ringing
+keyword = rotary

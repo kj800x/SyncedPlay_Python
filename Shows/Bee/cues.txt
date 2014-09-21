@@ -1,0 +1,8 @@
+[Landline]
+loop rotary
+[Stop Landline]
+stop rotary
+[Cell Phone]
+loop cell
+[Stop Cell Phone]
+stop cell

@@ -1,0 +1,70 @@
+[WhyDoFools.ogg]
+name = Why Do Fools Fall In Love
+keyword = wdf
+[SayYouLoveMe.ogg]
+name = You Don't Have to Say You Love Me
+keyword = sylm
+[Lollipop.ogg]
+name = My Boy Lollipop
+keyword = lollipop
+[Rebel.ogg]
+name = He's A Rebel
+keyword = rebel
+
+[Knocking.ogg]
+name = 3 Knocks
+keyword = knocking
+
+[Nightline.ogg]
+name = Nightline Theme
+keyword = nightline
+[News.ogg]
+name = News Radio
+keyword = news
+
+[Pocks.ogg]
+name = Slow Pocking
+keyword = spock
+#[PocksLoud.ogg]
+#name = Faster Pocking
+#keyword = fpock
+
+[Morrie1.ogg]
+name = Morrie 1
+keyword = m1
+[Morrie2.ogg]
+name = Morrie 2
+keyword = m2
+[Morrie3.ogg]
+name = Morrie 3
+keyword = m3
+[Morrie4.ogg]
+name = Morrie 4
+keyword = m4
+[Morrie5.ogg]
+name = Morrie 5
+keyword = m5
+[Morrie6.ogg]
+name = Morrie 6
+keyword = m6
+
+[Mimi.ogg]
+name = Mimi's Death from La Bohem
+keyword = mimi
+[Janine.ogg]
+name = Janine Singing
+keyword = janine
+
+[CellPhone.ogg]
+name = Cell Phone Ring
+keyword = cell
+[RotaryPhone.ogg]
+name = Rotary Phone Ringing
+keyword = rotary
+
+[Baseball.ogg]
+name = Baseball Ambient Sounds
+keyword = sports
+[Cheering.ogg]
+name = Crowd Cheering
+keyword = woo

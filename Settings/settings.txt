@@ -9,3 +9,4 @@ windowheight = 0
 undefinedcolor = 96C4F2
 font = Courier New
 fontsize = 15
+startupshow = Morrie

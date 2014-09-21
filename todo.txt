@@ -1,22 +1,12 @@
-Make it so that errors are handled gracefully, 
-Comment lines are not being ignored
-Investigate the possiblity of an alias.txt
-  Ex:
-    sounds.txt:
-      [sound.ogg]
-      _name = Magic Sound
-      _command = mag
-    alias.txt:
-      m-sil = silence mag
-    Possible commands:
-      silence mag
-      fade 1 mag
-      play mag
-      loop mag
-      m-sil
-      
+FADE FADES EVERYTHING, THAT IS BAD
+opening a new show makes it so that some sounds can exist indefinitaly. Stop all sounds when swapping.
+Make it so that errors are handled gracefully
+Percent Completion of Songs.
+Make it so that songs natually end, it progressesses to the next cue.
       
 done:
+Panic button. ! = silence all
+Comment lines are not being ignored
 Add in a loops option for ambiance looping sounds.
   Docs: http://www.pygame.org/docs/ref/mixer.html
     Search for loop

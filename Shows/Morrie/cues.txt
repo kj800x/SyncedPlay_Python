@@ -1,0 +1,83 @@
+[Pre - Say You Love Me]
+play sylm
+[Pre - Why Do Fools Fall In Love]
+play wdf
+[Pre - My Boy Lollipop]
+play lollipop
+[Pre - He's a Rebel]
+play rebel
+[Pre - FADE ALL]
+fade 5 sylm
+fade 5 wdf
+fade 5 lollipop
+fade 5 rebel
+
+[pg  9 - Start Show]
+clock start show
+[pg 11 - Knocking]
+play knocking
+[pg 14 - Nightline Theme]
+play nightline
+[pg 14 - Fade Nightline]
+fade nightline
+[pg 15 - Rotary Loop]
+loop rotary
+[pg 15 - End Rotary]
+stop rotary
+[pg 15 - News Radio]
+play news
+[pg 15 - End News Radio]
+stop news
+[pg 16 - Cell Loop]
+loop cell
+[pg 16 - End Cell]
+stop cell
+[pg 19 - Start Pocking]
+loop spock
+[pg 20 - Morrie 1]
+play m1
+[pg 20 - Morrie 2]
+play m2
+[pg 20 - Cell Loop]
+loop cell
+[pg 20 - End Cell]
+stop cell
+[pg 20 - Morrie 3, Pocks louder now]
+play m3
+[pg 20 - Morrie 4]
+play m4
+[pg 20 - Cell Loop]
+loop cell
+[pg 20 - End Cell]
+stop cell
+[pg 20 - Morrie 5]
+play m5
+[pg 20 - Morrie 6]
+play m6
+[pg 20 - Cell Loop]
+loop cell
+[pg 20 - End Cell]
+stop cell
+[pg 20 - Stop Pocks]
+stop spock
+[pg 26 - Mimi's Death]
+play mimi
+[pg 26 - Fade Mimi's Death]
+fade mimi
+[pg 28 - Cell Phone]
+loop cell
+[pg 28 - End Cell]
+stop cell
+[pg 35 - Sports sounds]
+play sports
+[pg 36 - End Sports, Woo]
+stop sports
+play woo
+[pg 36 - Fade Woo]
+fade woo
+[pg 37 - Janine]
+play janine
+[pg 38 - Fade Janine]
+fade janine
+[pg 41 - End Show]
+clock end show
