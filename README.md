@@ -1,13 +1,7 @@
 # SyncedPlay
 
-This program was developed for people who need to play back certain sound files at certain times, with no delay.
-My particular use-case was during drama preformances, when sound effects had to be played, and other solutions had too long of a loading period.
+![screenshot](http://i.imgur.com/gB11nld.png)
 
-Because I've had a few non-programmer type people ask me if they can use this, I'm going to write some very simple instructions. More technically minded people might want to look at the file README_FOR_PROGRAMMERS.md.
+This program was developed for people who need to play back certain sound files at certain times in a theatrical show. I found that other programs had too much lag from when you press play to when the sound effect actually plays, didn't allow me to play multiple sounds at once, and didn't allow me to loop sounds continuously (while playing other sounds). 
 
-## Steps to get started:
-
-1.  Downloads the program. You'll find the download button on the github page (Currently: http://github.com/robodoggy/SyncedPlay ). It's at the bottom of the rightmost column on the page. Alternatively, google "Download ZIP file github.com"
-2.  Extract the program.
-3.  Open the file "index.html" in the docs folder.
-4.  What are you still doing here? That file is where I continue my instructions.
+SyncedPlay is written in Python using PyGame, and it loads all the sound effects when the program starts, so they all able to be started instantaneously. Also it includes a loop command, so samples (like a cell phone ring) can be looped until they need to be stopped. The shows can be run live (by typing commands) or cued up in a cue file (each cue can be activated by pressing tab).  
